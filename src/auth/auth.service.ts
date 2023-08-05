@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
@@ -6,28 +6,46 @@ import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { Account } from '../account/schema/account.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Account.name)
+    private accountModel: Model<Account>,
     private jwtService: JwtService
     ) {}
 
-    async signUp(singUpDto: SignUpDto): Promise<{ token: string}> {
-      const {name, email, password} = singUpDto
+    async signUp(signUpDto: SignUpDto): Promise<{ token: string}> {
+      const {username, email, password} = signUpDto
 
       const hashedPassword = await bcrypt.hash(password, 10)
 
-      const user = await this.userModel.create({
-        name,
-        email,
-        password: hashedPassword
-      })
-
-      const token = this.jwtService.sign({id: user._id})
-      return {token}
+      try {
+        const user = await this.userModel.create({
+          email,
+          password: hashedPassword
+        })
+    
+        await this.accountModel.create({
+          user: user._id,
+          username: username,
+          profilePicture: '',
+          bio:'',
+          favoriteListings:[],
+          friendsList: []
+        });
+    
+        const token = this.jwtService.sign({id: user._id})
+        return {token}
+      } catch (error) {
+        if (error.code === 11000) {
+          throw new ConflictException('Username already exists');
+        }
+        throw error;
+      }
     }
 
     async login(loginDto: LoginDto): Promise<{ token:string }> {
@@ -45,6 +63,10 @@ export class AuthService {
       const token = this.jwtService.sign({id: user._id})
       return {token}
 
+    }
+
+    async getUserById(userId: string): Promise<User | null> {
+      return await this.userModel.findById(userId).exec();
     }
 
 }

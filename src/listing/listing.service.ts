@@ -39,7 +39,7 @@ export class ListingService {
 
     const data = Object.assign(listing, {user:user._id})
 
-    const res = await this.listingModel.create(listing)
+    const res = await this.listingModel.create(data)
     return res
   }
 
