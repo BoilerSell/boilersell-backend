@@ -15,29 +15,45 @@ export class ListingService {
   ) {}
 
   async findAll(query: Query): Promise<Listing[]> {
+    const search = {};
 
-    const search = query.search ? {
-      $or: [
-        {
-        title : {
-        $regex: query.search,
-        $options: 'i'
-        } 
-      },
-      {
-        description : {
-        $regex: `\\b${query.search}\\b`
-        }
-      }
-     ]
-    } : {}
-    const listings = await this.listingModel.find(search)
-    return listings
-  }
+    // Handle the search condition
+    if (query.search) {
+        search['$or'] = [
+            {
+                title: {
+                    $regex: query.search,
+                    $options: 'i'
+                }
+            },
+            {
+                description: {
+                    $regex: `\\b${query.search}\\b`
+                }
+            }
+        ];
+    }
+
+    // Handle the category condition
+    if (query.category) {
+        search['category'] = query.category;
+    }
+
+    // Handle the filters condition
+    if (query.filters) {
+        // Ensure filters is an array, even if a single filter is provided
+        const filters = Array.isArray(query.filters) ? query.filters : [query.filters];
+        search['filters'] = { $all: filters };
+    }
+
+    const listings = await this.listingModel.find(search).sort({ createdAt: -1 }).exec();
+    return listings;
+}
+
 
   async create(listing: Listing, user: User): Promise<Listing> {
 
-    const data = Object.assign(listing, {user:user._id})
+    const data = Object.assign(listing, {user:user._id.toString()})
 
     const res = await this.listingModel.create(data)
     return res

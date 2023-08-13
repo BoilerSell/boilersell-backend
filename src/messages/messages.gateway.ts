@@ -1,39 +1,46 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { Server, Socket } from 'socket.io'
 
-@WebSocketGateway()
+
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:5173'],
+    credentials: true
+  }
+})
 export class MessagesGateway {
+  @WebSocketServer()
+  server: Server;
+
   constructor(private readonly messagesService: MessagesService) {}
 
   @SubscribeMessage('createMessage')
-  create(@MessageBody() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+  async create(@MessageBody() createMessageDto: CreateMessageDto): Promise<void> {
+    const newMessage = await this.messagesService.createMessage(createMessageDto);
+    this.server.to(createMessageDto.chatroomId).emit('newMessage', newMessage);
   }
 
-  @SubscribeMessage('findAllMessages')
-  findAll() {
-    return this.messagesService.findAll();
+  @SubscribeMessage('joinRoom')
+    handleJoinRoom(@MessageBody() data: { chatroomId: string }, @ConnectedSocket() client: Socket): void {
+    client.join(data.chatroomId);
   }
 
-  @SubscribeMessage('join')
-  joinRoom() {
-
+  @SubscribeMessage('leaveRoom')
+    handleLeaveRoom(@MessageBody() data: { chatroomId: string }, @ConnectedSocket() client: Socket): void {
+    client.leave(data.chatroomId);
   }
 
   @SubscribeMessage('typing')
-  async typing() {
-    
+  async typing(@MessageBody() data: any, @ConnectedSocket() client: Socket): Promise<void> {
+    this.server.to(data.chatroomId).emit('typing', { userId: data.userId, isTyping: data.isTyping });
   }
 
-  // @SubscribeMessage('updateMessage')
-  // update(@MessageBody() updateMessageDto: UpdateMessageDto) {
-  //   return this.messagesService.update(updateMessageDto.id, updateMessageDto);
-  // }
-
-  // @SubscribeMessage('removeMessage')
-  // remove(@MessageBody() id: number) {
-  //   return this.messagesService.remove(id);
-  // }
+  @SubscribeMessage('getChatHistory')
+  async handleChatHistoryRequest(@MessageBody() data: { chatroomId: string }, @ConnectedSocket() client: Socket): Promise<void> {
+    const chatHistory = await this.messagesService.getChatHistory(data.chatroomId);
+    client.emit('chatHistory', chatHistory);
+}
+  
 }

@@ -1,4 +1,5 @@
 export class Message {
-  name: string
-  text: string
+  sender: string;
+  text: string;
+  chatroomId: string;
 }

@@ -18,11 +18,15 @@ export class CreateListingDto {
   @IsNotEmpty()
   @IsEnum(Category, {message: 'Please enter the correct category'})
   readonly category: Category
+
+  @IsNotEmpty()
+  @IsString({ each: true })
+  readonly filters: string[]
   
   @IsArray()
   @IsString({ each: true })
   readonly images: string[];
 
   @IsEmpty({message: "You cannot pass user id"})
-  readonly user:User
+  readonly user:string
 }

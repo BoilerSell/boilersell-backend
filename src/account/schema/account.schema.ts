@@ -1,14 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { User } from '../../auth/schemas/user.schema';
-import { Listing } from 'src/listing/schemas/listing.schema';
+
 
 @Schema({
   timestamps: true
 })
 export class Account extends Document {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  user: Types.ObjectId | User
+  @Prop()
+  user: string
 
   @Prop({ unique: true })
   username: string;
@@ -19,14 +18,14 @@ export class Account extends Document {
   @Prop()
   bio: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Listing' }] })
-  listings: (Types.ObjectId | Listing)[];
+  @Prop()
+  listings: string[]
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Listing' }] })
-  favoriteListings: (Types.ObjectId | Listing)[];
+  @Prop()
+  favoriteListings: string[]
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Account' }] })
-  friendsList: (Types.ObjectId | Account)[];
+  @Prop()
+  friendsList: string[]
 
 }
 

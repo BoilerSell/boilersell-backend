@@ -1,25 +1,50 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Chatroom } from './schemas/chatroom.schema';
+import { Message } from './schemas/message.schema';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
-import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
-  messages:Message[] = [{name: 'Jayden', text: 'yo'}]
+  constructor(
+    @InjectModel('Chatroom') private chatroomModel: Model<Chatroom>,
+    @InjectModel('Message') private messageModel: Model<Message>,
+  ) {}
 
-  create(createMessageDto: CreateMessageDto) {
-    return this.messages.push(createMessageDto);
+  async getOrCreateChatroom(user1: string, user2: string): Promise<Chatroom> {
+    let chatroomId = await this.chatroomModel.findOne({
+      $or: [
+        { user1: user1, user2: user2 },
+        { user1: user2, user2: user1 },
+      ],
+    });
+    if (!chatroomId) {
+      chatroomId = await new this.chatroomModel({ user1, user2 }).save();
+    }
+    return chatroomId;
   }
 
-  findAll() {
-    return this.messages;
+  async getChatHistory(chatroomId: string): Promise<Message[]> {
+    try {
+      return this.messageModel.find({ chatroomId: chatroomId }).sort({ timestamp: 1 });
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      throw new Error('Failed to fetch chat history');
+    }
+  }
+  
+  async createMessage(dto: CreateMessageDto): Promise<Message> {
+    const message = new this.messageModel(dto);
+    return message.save();
   }
 
-  // update(id: number, updateMessageDto: UpdateMessageDto) {
-  //   return `This action updates a #${id} message`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} message`;
-  // }
+  async getChatroomsForUser(userId: string): Promise<Chatroom[]> {
+    return this.chatroomModel.find({
+        $or: [
+            { user1: userId },
+            { user2: userId },
+        ],
+    });
+}
 }

@@ -13,8 +13,9 @@ export class ListingController {
 
   @Get()
   async getAllListings(@Query() query: ExpressQuery): Promise<Listing[]> {
-    return this.listingService.findAll(query)
-  }
+  // ?category=Marketplace&filters=filter1&filters=filter2
+  return this.listingService.findAll(query);
+}
 
 
   @Post('new')

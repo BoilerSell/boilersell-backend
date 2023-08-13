@@ -6,8 +6,9 @@ import { User } from 'src/auth/schemas/user.schema';
 export enum Category {
   MARKETPLACE = 'Marketplace',
   TICKETS = 'Tickets',
-  RIDES = 'Rides',
-  SUBLEASE = 'Sublease'
+  CAR = 'Car',
+  HOUSING = 'HOUSING',
+  BUY_REQUEST = 'Buy Request'
 }
 
 
@@ -17,22 +18,25 @@ export enum Category {
 export class Listing {
 
   @Prop()
-  title: string;
+  title: string
 
   @Prop()
-  price: number;
+  price: number
 
   @Prop()
-  description: string;
+  description: string
 
   @Prop()
-  category: Category;
+  category: Category
+
+  @Prop()
+  filters: string[]
 
   @Prop([String])
-  images: string[];
+  images: string[]
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User'})
-  user: User;
+  @Prop()
+  user: string
   
 }
 

@@ -20,10 +20,14 @@ export class UpdateListingDto {
   @IsEnum(Category, {message: 'Please enter the correct category'})
   readonly category: Category
 
+  @IsOptional()
+  @IsString({ each: true })
+  readonly filters: string[]
+
   @IsArray()
   @IsString({ each: true })
   readonly images: string[];
 
   @IsEmpty({message: "You cannot pass user id"})
-  readonly user:User
+  readonly user:string
 }

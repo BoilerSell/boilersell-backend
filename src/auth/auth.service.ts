@@ -30,7 +30,7 @@ export class AuthService {
         })
     
         await this.accountModel.create({
-          user: user._id,
+          user: user._id.toString(),
           username: username,
           profilePicture: '',
           bio:'',
