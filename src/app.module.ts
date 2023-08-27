@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ListingModule } from './listing/listing.module';
 import { MessagesModule } from './messages/messages.module';
 import { AccountModule } from './account/account.module';
+import { UploadModule } from './upload/upload.module';
 
 
 @Module({
@@ -19,7 +20,7 @@ import { AccountModule } from './account/account.module';
     AuthModule,
     ListingModule,
     AccountModule, 
-    MessagesModule,
+    MessagesModule, UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

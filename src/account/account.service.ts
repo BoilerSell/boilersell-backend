@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { User } from 'src/auth/schemas/user.schema';
 import { Listing } from 'src/listing/schemas/listing.schema';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class AccountService {
@@ -13,7 +14,7 @@ export class AccountService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Account.name) private readonly accountModel: Model<Account>,
     @InjectModel(Listing.name) private readonly listingModel: Model<Listing>,
-    
+    private readonly uploadService: UploadService
 
     ) {}
     
@@ -42,6 +43,21 @@ export class AccountService {
     
       if(!existingAccount) {
         throw new NotFoundException('Account not found')
+      }
+
+        if (account.profilePicture) {
+
+        const base64Data = account.profilePicture.replace(/^data:image\/\w+;base64,/, "");
+      
+        // Convert base64 to buffer
+        const imageBuffer = Buffer.from(base64Data, 'base64')
+    
+        // Generate a unique filename, you can use any logic for this
+        const filename = `${Date.now()}.jpg`
+    
+        const s3Url = await this.uploadService.upload(filename, imageBuffer)
+
+        account.profilePicture = s3Url
       }
     
       Object.assign(existingAccount, account);

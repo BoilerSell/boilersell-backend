@@ -1,6 +1,5 @@
-import { IsArray, IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsBoolean, IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { Category } from '../schemas/listing.schema'
-import { User } from 'src/auth/schemas/user.schema'
 
 export class UpdateListingDto {
 
@@ -24,10 +23,15 @@ export class UpdateListingDto {
   @IsString({ each: true })
   readonly filters: string[]
 
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   readonly images: string[];
 
   @IsEmpty({message: "You cannot pass user id"})
-  readonly user:string
+  readonly user: string
+
+  @IsOptional()
+  @IsBoolean()
+  readonly isSold: boolean;
 }

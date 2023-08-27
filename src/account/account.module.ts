@@ -6,6 +6,7 @@ import { AccountSchema } from './schema/account.schema';
 import { UserSchema } from 'src/auth/schemas/user.schema';
 import { ListingSchema } from 'src/listing/schemas/listing.schema';
 import { AuthModule } from 'src/auth/auth.module';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [ AuthModule,
@@ -13,7 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
   MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   MongooseModule.forFeature([{ name: 'Listing', schema: ListingSchema }]),
 ],
-  providers: [AccountService],
+  providers: [AccountService, UploadService],
   controllers: [AccountController]
 })
 export class AccountModule {}

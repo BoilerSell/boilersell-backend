@@ -17,8 +17,14 @@ export class MessagesController {
         return this.messagesService.getChatHistory(chatroomId);
     }
 
-    @Get(':userId')
+    @Get('user/:userId')
     async getChatroomsForUser(@Param('userId') userId: string): Promise<Chatroom[]> {
       return this.messagesService.getChatroomsForUser(userId);
+    }
+
+    @Get(':chatroomId')
+    async getChatroomById(@Param('chatroomId') chatroomId: string): Promise<Chatroom> {
+    return this.messagesService.getChatroomById(chatroomId);
 }
+
 }

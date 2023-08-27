@@ -6,6 +6,7 @@ import { ChatroomSchema } from './schemas/chatroom.schema';
 import { MessageSchema } from './schemas/message.schema';
 import { AccountSchema } from 'src/account/schema/account.schema';
 import { MessagesController } from './messages.controller';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { MessagesController } from './messages.controller';
     MongooseModule.forFeature([{ name: 'Chatroom', schema: ChatroomSchema }]),
     MongooseModule.forFeature([{ name: 'Message', schema: MessageSchema }]),
   ],
-  providers: [MessagesGateway, MessagesService],
+  providers: [MessagesGateway, MessagesService, UploadService],
   controllers: [MessagesController]
 })
 export class MessagesModule {}

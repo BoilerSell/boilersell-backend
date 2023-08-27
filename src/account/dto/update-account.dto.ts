@@ -15,7 +15,7 @@ export class UpdateAccountDto {
 
   @IsOptional()
   @IsString()
-  readonly profileImage: string
+  profilePicture: string
 
   @IsEmpty({message: 'No editing userId manually'})
   user: User

@@ -6,8 +6,7 @@ export class SignUpDto {
   readonly username: string;
 
   @IsNotEmpty()
-  @IsEmail({}, { message: 'Please enter correct email' })
-  @Matches(/@purdue\.edu$/, { message: 'You must use a Purdue Email!' })
+  @Matches(/@purdue\.edu$/, { message: 'Please use a valid Purdue email' })
   readonly email: string;
 
   @IsNotEmpty()

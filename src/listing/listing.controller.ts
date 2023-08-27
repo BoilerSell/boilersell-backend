@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ListingService } from './listing.service';
 import { Listing } from './schemas/listing.schema';
 import { CreateListingDto } from './dto/create-listing.dto';
@@ -14,9 +14,18 @@ export class ListingController {
   @Get()
   async getAllListings(@Query() query: ExpressQuery): Promise<Listing[]> {
   // ?category=Marketplace&filters=filter1&filters=filter2
-  return this.listingService.findAll(query);
-}
+  return this.listingService.findAll(query)
+  }
 
+  @Get('user-listings/:userId')
+  async getUserListings(@Param('userId') userId: string, @Req() req): Promise<Listing[]> {
+    return this.listingService.findAllByUser(userId)
+  }
+
+  @Get('user-favorite-listings/:userId')
+  async getUserFavoriteListings(@Param('userId') userId: string): Promise<Listing[]> {
+    return this.listingService.findAllFavoritesByUser(userId)
+  }
 
   @Post('new')
   @UseGuards(AuthGuard())

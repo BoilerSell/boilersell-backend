@@ -13,7 +13,7 @@ export class Account extends Document {
   username: string;
 
   @Prop()
-  profileImage: string;
+  profilePicture: string;
 
   @Prop()
   bio: string;

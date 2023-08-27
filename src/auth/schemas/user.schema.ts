@@ -13,6 +13,15 @@ export class User extends Document{
 
   @Prop()
   password: string
+
+  @Prop()
+  verificationToken: string
+
+  @Prop()
+  resetPasswordToken: string;
+
+  @Prop()
+  resetPasswordExpires: Date;
   
 }
 

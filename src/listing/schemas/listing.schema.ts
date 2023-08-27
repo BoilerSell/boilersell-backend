@@ -1,14 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
-import { User } from 'src/auth/schemas/user.schema';
 
 
 export enum Category {
-  MARKETPLACE = 'Marketplace',
-  TICKETS = 'Tickets',
-  CAR = 'Car',
-  HOUSING = 'HOUSING',
-  BUY_REQUEST = 'Buy Request'
+  MARKETPLACE = 'marketplace',
+  TICKETS = 'tickets',
+  CARS = 'cars',
+  HOUSING = 'housing',
+  BUY_REQUEST = 'buy-request'
 }
 
 
@@ -37,6 +35,9 @@ export class Listing {
 
   @Prop()
   user: string
+
+  @Prop({ default: false })
+  isSold: boolean;
   
 }
 

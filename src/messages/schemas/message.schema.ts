@@ -4,16 +4,22 @@ import { Document } from 'mongoose';
 @Schema()
 export class Message extends Document {
   @Prop()
-  sender: string;
+  sender: string
 
   @Prop()
-  text: string;
+  text: string
 
   @Prop()
-  chatroomId: string;
+  chatroomId: string
+
+  @Prop({ default: [] })
+  readBy: string[]
+
+  @Prop()
+  image: string
 
   @Prop({ default: Date.now })
-  timestamp: Date;
+  timestamp: Date
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);
