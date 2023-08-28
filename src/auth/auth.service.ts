@@ -94,7 +94,7 @@ export class AuthService {
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
         subject: 'Please verify your email',
-        html: toHtml(`http://localhost:5173/verify-email?token=${token}`, 'Verify Email', 
+        html: toHtml(process.env.CLIENT_URL + `/verify-email?token=${token}`, 'Verify Email', 
         'Verify your email in order to get access to BoilerSell. We do this to keep the marketplace Purdue exclusive', 'Verify', 'Thank you for using BoilerSell') ,
       })
       }
@@ -198,7 +198,7 @@ export class AuthService {
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
         subject: 'Email Verification for BoilerSell',
-        html: toHtml(`http://localhost:5173/reset-password?token=${token}`, 'Reset Password', 
+        html: toHtml(process.env.CLIENT_URL + `/reset-password?token=${token}`, 'Reset Password', 
         'Reset your password to something that you can remember well.', 'Reset', 'Thank you for using BoilerSell'),
       })
     }

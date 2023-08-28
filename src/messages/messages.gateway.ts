@@ -6,7 +6,7 @@ import { Server, Socket } from 'socket.io'
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: [process.env.CLIENT],
     credentials: true
   }
 })

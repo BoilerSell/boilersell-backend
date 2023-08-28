@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  backend:
+    build: ./
+    container_name: boilersell_api
+    environment:
+      - PORT=8000
+      - DB_URI='mongodb+srv://boilersell:MPE93HgWyMSA8CF9@cluster0.v9o9fq0.mongodb.net/'
+
+      - JWT_SECRET=abc
+      - JWT_EXPIRES=3d
+
+      - AWS_ACCESS_KEY_ID=AKIAXV4XGES5B4CNT3OZ
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_S3_REGION=us-east-1
+
+      - UPLOAD_RATE_TTL=60
+      - UPLOAD_RATE_LIMIT=10000
+
+      - EMAIL=boilersell.purdue@gmail.com
+      - PASSWORD=cxybluqyenvstetj
+
+      - CLIENT=http://localhost:5173
