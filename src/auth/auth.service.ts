@@ -94,8 +94,8 @@ export class AuthService {
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
         subject: 'Please verify your email',
-        html: toHtml(process.env.CLIENT_URL + `/verify-email?token=${token}`, 'Verify Email', 
-        'Verify your email in order to get access to BoilerSell. We do this to keep the marketplace Purdue exclusive', 'Verify', 'Thank you for using BoilerSell') ,
+        html: toHtml(process.env.CLIENT_URL + `/verify-email?token=${token}`, 'Verify Your Email', 
+        'Verify your email in order to get access to BoilerSell. We do this to keep the marketplace Purdue exclusive', 'Confirm Your Email', 'Thank you for using BoilerSell') ,
       })
       }
 
@@ -111,12 +111,14 @@ export class AuthService {
         throw new UnauthorizedException('Token is missing');
       }      
 
-       try {
+      try {
         tempUser = await this.tempUserModel.findOne({ verificationToken: token });
         console.log("TempUser found:", tempUser);
       } catch (error) {
         throw new UnauthorizedException('Error in retrieving temp user');
       }
+      
+      
     
       const { email, password, username } = tempUser;
     
@@ -203,7 +205,7 @@ export class AuthService {
       let info = await transporter.sendMail({
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
-        subject: 'Email Verification for BoilerSell',
+        subject: 'Reset BoilerSell Password',
         html: toHtml(process.env.CLIENT_URL + `/reset-password?token=${token}`, 'Reset Password', 
         'Reset your password to something that you can remember well.', 'Reset', 'Thank you for using BoilerSell'),
       })
