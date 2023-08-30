@@ -110,7 +110,13 @@ export class AuthService {
       if (!token) {
         throw new UnauthorizedException('Token is missing');
       }      
-      
+
+       try {
+        tempUser = await this.tempUserModel.findOne({ verificationToken: token });
+        console.log("TempUser found:", tempUser);
+      } catch (error) {
+        throw new UnauthorizedException('Error in retrieving temp user');
+      }
     
       const { email, password, username } = tempUser;
     
