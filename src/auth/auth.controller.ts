@@ -20,6 +20,7 @@ export class AuthController {
 
   @Post('/verify-email')
   verifyEmail(@Body('token') token: string): Promise<string> {
+    console.log('the token for a new user registering is' + token);
     return this.authService.verifyEmail(token);
   }
 

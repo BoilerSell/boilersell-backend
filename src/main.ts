@@ -17,9 +17,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
 
   const configService = app.get(ConfigService)
+  const clientUrls = process.env.CLIENT_URL.split(',')
   
   app.enableCors({
-    origin: process.env.CLIENT_URL,
+    origin: clientUrls,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   })

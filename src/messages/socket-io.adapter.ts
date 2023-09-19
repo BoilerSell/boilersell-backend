@@ -14,11 +14,12 @@ export class SocketIOAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions ) {
-    const clientPort = process.env.CLIENT_URL
+    const clientUrls = process.env.CLIENT_URL.split(',');
+
 
 
     const cors =({
-        origin: [clientPort],
+        origin: clientUrls,
         credentials: true
     })
 

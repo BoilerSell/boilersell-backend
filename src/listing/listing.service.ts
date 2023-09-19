@@ -180,7 +180,18 @@ export class ListingService {
   
 
   async deleteByID(id:string): Promise<Listing> {
-    return await this.listingModel.findByIdAndDelete(id)
+    const deletedListing = await this.listingModel.findByIdAndDelete(id);
+    
+    if (!deletedListing) {
+      throw new NotFoundException('Listing not found');
+    }
+  
+    await this.accountModel.updateOne(
+      { listings: id },
+      { $pull: { listings: id } }
+    );
+  
+    return deletedListing;
   }
 
 

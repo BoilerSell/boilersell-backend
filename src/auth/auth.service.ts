@@ -66,14 +66,15 @@ export class AuthService {
       const user = await this.userModel.findOne({ email });
     
       if (!user) {
-        throw new UnauthorizedException('Invalid Email or Password');
+        throw new UnauthorizedException('No User found with this Email');
+
       }
   
     
       const isPasswordMatched = await bcrypt.compare(password, user.password);
     
       if (!isPasswordMatched) {
-        throw new UnauthorizedException('Invalid Email or Password');
+        throw new UnauthorizedException('Invalid Password');
       }
     
       const token = this.jwtService.sign({id: user._id});
@@ -89,12 +90,14 @@ export class AuthService {
           pass: process.env.PASSWORD,
         }
       })
-  
+      const clientUrls = process.env.CLIENT_URL.split(',') 
+      const clientUrl = clientUrls[0]
+
       let info = await transporter.sendMail({
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
         subject: 'Please verify your email',
-        html: toHtml(process.env.CLIENT_URL + `/verify-email?token=${token}`, 'Verify Your Email', 
+        html: toHtml(clientUrl + `/verify-email?token=${token}`, 'Verify Your Email', 
         'Verify your email in order to get access to BoilerSell. We do this to keep the marketplace Purdue exclusive', 'Confirm Your Email', 'Thank you for using BoilerSell') ,
       })
       }
@@ -201,12 +204,13 @@ export class AuthService {
           pass: process.env.PASSWORD,
         }
       })
-  
+      const clientUrls = process.env.CLIENT_URL.split(',')
+      const clientUrl = clientUrls[0]
       let info = await transporter.sendMail({
         from: '"BoilerSell" <boilersell.purdue@gmail.com>',
         to: email,
         subject: 'Reset BoilerSell Password',
-        html: toHtml(process.env.CLIENT_URL + `/reset-password?token=${token}`, 'Reset Password', 
+        html: toHtml(clientUrl + `/reset-password?token=${token}`, 'Reset Password', 
         'Reset your password to something that you can remember well.', 'Reset', 'Thank you for using BoilerSell'),
       })
     }
